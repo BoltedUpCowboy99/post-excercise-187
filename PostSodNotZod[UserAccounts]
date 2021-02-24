@@ -1,0 +1,157 @@
+//AUTHOR: Trevor Post
+//COURSE: CPT187
+//PURPOSE: The purpose of this is to create 
+//PURPOSE: customer accounts for a customer
+//PURPOSE: as they are beginning a transaction.
+//STARTDATE: 02/17/2021
+
+package edu.cpt187.post.exercise6;
+
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class UserAccounts 
+{
+	//declare and initialize class CONSTANTS
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+	
+	//declare and initialize all non-CONSTANT class attributes
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+	
+	//default constructor for UserAccounts
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//END of UserAccounts constructor
+	
+	//setter
+	//this will ASSIGN a value to userAccountArray
+	public void setUserAccountArrays()
+	{
+		try
+		{
+			//this instantiation statement will attempt to open the file
+			Scanner infile = new Scanner(new FileInputStream(masterFileName));
+			//Reset local recordCount
+			recordCount = RESET_VALUE;
+			//if the file is found and opened successfully, the remaining try block code is executed				
+			//.hasNext() will test for the EOF
+			while(infile.hasNext()==true && recordCount < MAXIMUM_RECORDS)
+			{
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+				recordCount++;
+			}//END of while for field assignment
+			
+			//Close the Scanner/File
+			infile.close();
+		}//END of try
+		catch(IOException ex)
+		{	
+			//if the file is not found or opened, catch is executed; which sets the flag to "not found"
+			recordCount = NOT_FOUND;
+		}//End of catch
+	}//END userAccountArrays
+	
+	//setter
+	//this will ASSIGN a value to searchedIndex
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+	}//END searchedIndex
+	
+	//setter
+	//this will ASSIGN a value to searchedIndex
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+		
+		if(searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}//END if(searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+	}//END searchedIndex
+	
+	//setter
+	//this will ASSIGN a value to writeOneRecord
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)
+	{
+		try
+		{
+			//this instantiation statement will attempt to open the file
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+			//if the file is found and opened successfully, the remaining try block code is executed
+			//this printf statement writes the borrowed values to the file, separated by tabs
+			filePW.printf("%n%s\t%s%n", borrowedUserName, borrowedPassword);
+			//set flag to "found"
+			//Close the PrintWrite/File
+			filePW.close();
+		}//END of try
+		catch(IOException ex)
+		{
+			//if the file is not found or opened, catch is executed; which sets the flag to "not found"
+			recordCount = NOT_FOUND;
+		}//END of catch
+	}//END writeOneRecord
+	
+	//getter
+	//this will RETURN the value of seqSearch
+	public int getSeqSearch(String borrowedBorrowedUserName)
+	{
+		//local variables
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+				
+		//the 'run while' loop
+		while(localIndex < recordCount)
+		{
+			if(borrowedBorrowedUserName.equalsIgnoreCase(userNames[localIndex]))
+			{
+				localFound = localIndex;
+				localIndex = recordCount;
+			}//END if(borrowedBorrowedTargetID == itemIDs[localIndex])
+			else
+			{
+				localIndex++;
+			}//END else
+		}
+		return localFound;
+	}//END seqSearch
+	
+	//getter
+	//this will RETURN the value of passwordMatch
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		return	borrowedBorrowedPassword.equals(passwords[searchedIndex]);
+	}//END passwordMatch
+	
+	//getter
+	//this will RETURN the value of fileName
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END fileName
+	
+	//getter
+	//this will RETURN the value of maximumRecords
+	public int getMaximumRecords()
+	{
+		return MAXIMUM_RECORDS;
+	}//END maximumRecords
+	
+	//getter
+	//this will RETURN the value of searchedIndex
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	}//END searchedIndex
+}//END of class
