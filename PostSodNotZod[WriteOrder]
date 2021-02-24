@@ -1,0 +1,68 @@
+//AUTHOR: Trevor Post
+//COURSE: CPT187
+//PURPOSE: The purpose of this is to write an order
+//PURPOSE: for a customer.
+//STARTDATE: 02/17/2021
+
+package edu.cpt187.post.exercise6;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class WriteOrder
+{
+	//declare and initialize all non-CONSTANT class attributes
+	boolean fileFoundFlag = false;
+	private String masterFileName = "";
+	private int recordCount = 0;
+	
+	//default constructor for Order
+	public WriteOrder(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//END of WriteOrder constructor
+	
+	//setter
+	//this will ASSIGN a value to writeOrder
+	public void setWriteOrder(int borrowedItemID, String borrowedItemName, double borrowedItemPrice, int borrowedQuantity, double borrowedOrderCost)
+	{
+		try
+		{
+			//this instantiation statement will attempt to open the file
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+			//if the file is found and opened successfully, the remaining try block code is executed
+			//this printf statement writes the borrowed values to the file, separated by tabs
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f%n", borrowedItemID, borrowedItemName, borrowedItemPrice, borrowedQuantity, borrowedOrderCost);
+			//Close the PrintWrite/File
+			filePW.close();
+			recordCount++;
+		}//END of try
+		catch(IOException ex)
+		{
+			//if the file is not found or opened, catch is executed; which sets the flag to "not found"
+			fileFoundFlag = false;
+		}//END of catch
+	}//END writeOrder
+	
+	//getter
+	//this method will RETURN the value of fileFoundFlag
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	}//END getFileFoundFlag
+	
+	//getter
+	//this method will RETURN the value of fileName
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END getFileName
+	
+	//getter
+	//this method will RETURN the value of recordCount
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//END getRecordCount
+}//END of class
